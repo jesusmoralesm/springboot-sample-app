@@ -3,14 +3,12 @@ version: 0.2
 env:
   variables:
     ECR_REPO_URI: "879382821616.dkr.ecr.us-east-2.amazonaws.com/springboot-app"  # e.g. 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-springboot-app
-    AWS_REGION: "us-east-2"              # change if your region is different
+    AWS_REGION: "us-east-2"                                                      # change if your region is different
 
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws --version
-      - echo Logging in to Amazon ECR in region $AWS_REGION
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URI
 
   build:
@@ -23,7 +21,7 @@ phases:
     commands:
       - echo Pushing Docker image to ECR...
       - docker push $ECR_REPO_URI:latest
-      - echo Creating imagedefinitions.json file...
+      - echo Writing imagedefinitions.json...
       - printf '[{"name":"springboot-container","imageUri":"%s"}]' $ECR_REPO_URI:latest > imagedefinitions.json
 
 artifacts:
